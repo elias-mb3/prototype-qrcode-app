@@ -1,7 +1,18 @@
-import type {NextConfig} from 'next';
+// next.config.js
 
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  async rewrites() {
+    return [
+      {
+        // Esta é a rota "virtual" que seu frontend vai chamar
+        source: '/api/backend/:path*',
+        // Este é o endereço real do seu backend
+        destination: 'http://localhost:8080/:path*',
+      },
+    ];
+  },
+
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -32,4 +43,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

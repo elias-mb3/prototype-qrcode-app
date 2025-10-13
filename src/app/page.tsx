@@ -59,14 +59,14 @@ export default function Home() {
             }
             new URL(urlToEncode);
 
-            const response = await fetch('http://localhost:8080/qrcode/path', {
+            const response = await fetch('/api/backend/qrcode/path', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ text: urlToEncode }),
             });
-
+            console.log(response)
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(errorText || 'Falha na resposta da API. Tente novamente.');
