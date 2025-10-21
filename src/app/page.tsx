@@ -52,10 +52,9 @@ export default function Home() {
         setQrCodeUrl(null);
 
         try {
-            // Basic URL validation
             let urlToEncode = urlInput;
             if (!/^(https?:\/\/)/i.test(urlToEncode)) {
-              urlToEncode = 'https://' + urlToEncode;
+                urlToEncode = 'https://' + urlToEncode;
             }
             new URL(urlToEncode);
 
@@ -66,7 +65,6 @@ export default function Home() {
                 },
                 body: JSON.stringify({ text: urlToEncode }),
             });
-            console.log(response)
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(errorText || 'Falha na resposta da API. Tente novamente.');
@@ -83,7 +81,7 @@ export default function Home() {
             if (err instanceof TypeError && err.message.includes('URL')) {
                 setError('Por favor, insira uma URL válida.');
             } else if (err instanceof Error) {
-                 if (err.message.includes('Failed to fetch')) {
+                if (err.message.includes('Failed to fetch')) {
                     setError('Não foi possível conectar à API. Verifique se o serviço de backend está em execução.');
                 } else {
                     setError(err.message);
@@ -96,26 +94,25 @@ export default function Home() {
         }
     };
 
-    const handleDownload = async () => {
-        if (!qrCodeUrl) return;
+const handleDownload = () => { 
+    if (!qrCodeUrl) return;
 
-        try {
-            const response = await fetch(qrCodeUrl);
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'qrcode.png';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
-        } catch (downloadError) {
-            console.error('Erro ao baixar o QR Code:', downloadError);
-            setError('Não foi possível baixar o QR Code. Tente novamente.');
-        }
-    };
+    try {
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = qrCodeUrl; 
+        a.download = 'qrcode.png'; 
+        
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        
+    } catch (downloadError) {
+        console.error('Erro ao tentar baixar o QR Code:', downloadError);
+        setError('Não foi possível iniciar o download do QR Code.');
+    }
+};
 
     return (
         <main className="flex min-h-screen w-full flex-col items-center justify-center bg-background p-4 antialiased">
@@ -168,8 +165,8 @@ export default function Home() {
                         </Alert>
                     )}
 
-                    <div className="w-full p-2 rounded-lg border-2 border-dashed bg-muted/50 aspect-square flex items-center justify-center">
-                         {isLoading ? (
+                    <div className="w-[300px] h-[300px] mx-auto p-2 rounded-lg border-2 border-dashed bg-muted/50 flex items-center justify-center relative">
+                        {isLoading ? (
                             <div className="flex flex-col items-center gap-2 text-muted-foreground">
                                 <Loader2 className="h-10 w-10 animate-spin text-primary" />
                                 <p className="text-sm font-medium">Processando...</p>
@@ -181,7 +178,8 @@ export default function Home() {
                                 fill
                                 className="object-contain p-2 transition-opacity duration-500 opacity-0"
                                 unoptimized
-                                onLoadingComplete={(img) => {
+                                onLoad={(event) => { 
+                                    const img = event.target as HTMLImageElement; 
                                     img.classList.remove('opacity-0');
                                 }}
                             />
@@ -192,7 +190,7 @@ export default function Home() {
                             </div>
                         )}
                     </div>
-                    
+
                     {qrCodeUrl && !isLoading && (
                         <Button
                             onClick={handleDownload}
