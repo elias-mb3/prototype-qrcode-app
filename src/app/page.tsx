@@ -94,23 +94,15 @@ export default function Home() {
         }
     };
 
-const handleDownload = () => { 
+const handleDownload = () => {
     if (!qrCodeUrl) return;
 
     try {
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = qrCodeUrl; 
-        a.download = 'qrcode.png'; 
+        window.open(qrCodeUrl, '_blank', 'noopener,noreferrer');
         
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        
-    } catch (downloadError) {
-        console.error('Erro ao tentar baixar o QR Code:', downloadError);
-        setError('Não foi possível iniciar o download do QR Code.');
+    } catch (error) {
+        console.error('Erro ao tentar abrir o QR Code:', error);
+        setError('Não foi possível abrir o QR Code em uma nova aba.');
     }
 };
 

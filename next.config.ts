@@ -8,7 +8,7 @@ const nextConfig = {
         // Esta é a rota "virtual" que seu frontend vai chamar
         source: '/api/backend/:path*',
         // Este é o endereço real do seu backend
-        destination: 'http://localhost:8080/:path*',
+        destination: `${process.env.BACKEND_API_URL || 'http://localhost:8080'}/:path*`,
       },
     ];
   },
